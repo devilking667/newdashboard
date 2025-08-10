@@ -249,10 +249,32 @@ def bot_logs(bot_id):
         ORDER BY ts DESC LIMIT 100
     """, (bot_id,))
     return render_template('logs.html', bot=bot, logs=logs)
+@app.route('/')
+def home():
+    return "Dashboard Home"
 
+@app.route('/api/tasks/<account_id>', methods=['GET'])
+def get_tasks(account_id):
+    tasks = tasks_db.get(account_id, [])
+    return jsonify(tasks)
+
+@app.route('/api/logs', methods=['POST'])
+def post_logs():
+    log = request.get_json()
+    logs_db.append(log)
+    print(f"Log received: {log}")
+    return jsonify({"status": "ok"})
+
+@app.route('/api/tasks/<task_id>/complete', methods=['POST'])
+def complete_task(task_id):
+    # Remove the task from tasks_db (simplified)
+    for account, tasks in tasks_db.items():
+        tasks_db[account] = [t for t in tasks if t["id"] != task_id]
+    return jsonify({"status": "task marked complete"})
 
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port)
+
 
