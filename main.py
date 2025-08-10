@@ -10,6 +10,13 @@ from flask import (
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+tasks_db = {
+    "123": [
+        {"id": "task1", "type": "follow_user", "payload": "exampleuser"},
+        {"id": "task2", "type": "like_post", "payload": "1234567890"}
+    ]
+}
+
 app.secret_key = "supersecretkey"  # Needed for flash messages
 app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -276,5 +283,6 @@ def complete_task(task_id):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port)
+
 
 
