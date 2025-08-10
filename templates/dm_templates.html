@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>DM Message Templates for {{ bot.name }}</h2>
+
+<form action="{{ url_for('add_dm_template', bot_id=bot.id) }}" method="post" class="mb-3">
+  <div class="mb-3">
+    <textarea class="form-control" name="message" rows="3" placeholder="Enter DM message" required></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Add DM Template</button>
+</form>
+
+<ul class="list-group">
+  {% for dm in dm_templates %}
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    {{ dm.message }}
+    <form method="post" action="{{ url_for('delete_dm_template', bot_id=bot.id, dm_id=dm.id) }}" onsubmit="return confirm('Delete this DM template?');">
+      <button class="btn btn-danger btn-sm">Delete</button>
+    </form>
+  </li>
+  {% else %}
+  <li class="list-group-item">No DM templates available.</li>
+  {% endfor %}
+</ul>
+
+<a href="{{ url_for('bot_detail', bot_id=bot.id) }}" class="btn btn-secondary mt-3">Back to Bot</a>
+{% endblock %}

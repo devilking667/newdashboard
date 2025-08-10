@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+<a href="{{ url_for('bot_logs', bot_id=bot.id) }}" class="btn btn-secondary mt-3">View Activity Logs</a>
+
+{% block content %}
+<h1>{{ bot.name }} - Manage Accounts</h1>
+<p>{{ bot.description }}</p>
+<a href="{{ url_for('upload_targets', bot_id=bot.id) }}" class="btn btn-success mb-3">Upload Targets / Reels</a>
+
+<ul class="nav nav-tabs" id="botTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="accounts-tab" data-bs-toggle="tab" data-bs-target="#accounts" type="button" role="tab" aria-controls="accounts" aria-selected="true">Accounts</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="dm-tab" data-bs-toggle="tab" data-bs-target="#dm" type="button" role="tab" aria-controls="dm" aria-selected="false">DM Templates</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="logs-tab" data-bs-toggle="tab" data-bs-target="#logs" type="button" role="tab" aria-controls="logs" aria-selected="false">Activity Logs</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button" role="tab" aria-controls="upload" aria-selected="false">Upload Targets</button>
+  </li>
+</ul>
+<div class="tab-content mt-3" id="botTabsContent">
+  <div class="tab-pane fade show active" id="accounts" role="tabpanel" aria-labelledby="accounts-tab">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Status</th>
+          <th>Logged In</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for acc in accounts %}
+        <tr>
+          <td>{{ acc.username }}</td>
+          <td>{{ acc.status }}</td>
+          <td>{{ 'Yes' if acc.logged_in else 'No' }}</td>
+          <td>
+            <!-- Future: login, upload, view logs buttons -->
+            <button class="btn btn-secondary btn-sm" disabled>Login</button>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">No accounts linked.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="tab-pane fade" id="dm" role="tabpanel" aria-labelledby="dm-tab">
+    <h5>DM Message Templates</h5>
+    <ul class="list-group">
+      {% for dm in dm_templates %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ dm.message }}
+        <form method="post" action="{{ url_for('delete_dm_template', bot_id=bot.id, dm_id=dm.id) }}" onsubmit="return confirm('Delete this DM template?');">
+          <button class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </li>
+      {% else %}
+      <li class="list-group-item">No DM templates yet.</li>
+      {% endfor %}
+    </ul>
+    <form action="{{ url_for('add_dm_template', bot_id=bot.id) }}" method="post" class="mt-3">
+      <div class="mb-3">
+        <textarea class="form-control" name="message" rows="3" placeholder="Enter DM message" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Add DM Template</button>
+    </form>
+  </div>
+  <div class="tab-pane fade" id="logs" role="tabpanel" aria-labelledby="logs-tab">
+    <iframe src="{{ url_for('bot_logs', bot_id=bot.id) }}" style="width:100%; height:400px; border:none;"></iframe>
+  </div>
+  <div class="tab-pane fade" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+    <iframe src="{{ url_for('upload_targets', bot_id=bot.id) }}" style="width:100%; height:350px; border:none;"></iframe>
+  </div>
+</div>
+
+<a href="{{ url_for('dm_templates', bot_id=bot.id) }}" class="btn btn-info mt-3">Manage DM Templates</a>
+
+<h3 class="mt-4">DM Message Templates</h3>
+<ul>
+  {% for dm in dm_templates %}
+  <li>{{ dm.message }}</li>
+  {% else %}
+  <li>No DM templates yet.</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

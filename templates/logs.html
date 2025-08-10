@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Activity Logs for Bot: {{ bot.name }}</h2>
+
+<table class="table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>Timestamp</th>
+      <th>Account</th>
+      <th>Type</th>
+      <th>Message</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.ts }}</td>
+      <td>{{ log.username }}</td>
+      <td>{{ log.type }}</td>
+      <td>{{ log.message }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">No logs found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('bot_detail', bot_id=bot.id) }}" class="btn btn-secondary mt-3">Back to Bot</a>
+{% endblock %}

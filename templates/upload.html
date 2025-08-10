@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Upload Target File or Post</h2>
+
+<form action="{{ url_for('upload_targets', bot_id=bot.id) }}" method="post" enctype="multipart/form-data">
+  <div class="mb-3">
+    <label for="targetFile" class="form-label">Upload usernames (txt or csv):</label>
+    <input class="form-control" type="file" id="targetFile" name="target_file" accept=".txt,.csv" required>
+  </div>
+  <input type="hidden" name="target_type" value="follow_users">
+  <button type="submit" class="btn btn-primary">Upload & Start Following</button>
+</form>
+
+<hr>
+
+<form action="{{ url_for('upload_targets', bot_id=bot.id) }}" method="post">
+  <div class="mb-3">
+    <label for="reelUrl" class="form-label">Reel URL or ID:</label>
+    <input type="text" class="form-control" id="reelUrl" name="reel_url" placeholder="https://www.instagram.com/reel/XYZ" required>
+  </div>
+  <input type="hidden" name="target_type" value="follow_likers">
+  <button type="submit" class="btn btn-primary">Start Following Likers</button>
+</form>
+{% endblock %}
